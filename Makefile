@@ -43,7 +43,7 @@ check: fmtcheck vet lint build test ## Pre-flight checks before creating PR
 
 build-image: ## Build a docker image with the broker binary
 	env GOOS=linux go build -i -ldflags="-s -s" -o ${BUILD_DIR}/samplebroker ./cmd/samplebroker
-	docker build -f ${BUILD_DIR}/Dockerfile-localdev -t ${BROKER_IMAGE}:${TAG} ${BUILD_DIR}
+	docker build -f ${BUILD_DIR}/Dockerfile -t ${BROKER_IMAGE}:${TAG} ${BUILD_DIR}
 	@echo
 	@echo "Remember you need to push your image before calling make deploy"
 	@echo "    docker push ${BROKER_IMAGE}:${TAG}"
