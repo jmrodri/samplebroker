@@ -17,85 +17,56 @@
 package adapters
 
 import (
-	"bytes"
-	"context"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-
 	"github.com/automationbroker/bundle-lib/apb"
 	log "github.com/sirupsen/logrus"
+	yaml "gopkg.in/yaml.v1"
 )
+
+const apbyaml = `version: 1.0
+name: hello-world-db-apb
+description: A sample APB which deploys Hello World Database
+bindable: True
+async: optional
+metadata:
+  displayName: Hello World Database (APB)
+  dependencies: ['docker.io/centos/postgresql-94-centos7']
+  providerDisplayName: "Red Hat, Inc."
+plans:
+  - name: default
+    description: A sample APB which deploys Hello World Database
+    free: True
+    metadata:
+      displayName: Default
+      longDescription: This plan deploys a Postgres Database the Hello World application can connect to
+      cost: $0.00
+    parameters:
+      - name: postgresql_database
+        title: PostgreSQL Database Name
+        type: string
+        default: admin
+      - name: postgresql_user
+        title: PostgreSQL User
+        type: string
+        default: admin
+      - name: postgresql_password
+        title: PostgreSQL Password
+        type: string
+        default: admin`
 
 // FileAdapter - Docker Hub Adapter
 type FileAdapter struct {
-	Config Configuration
-}
-
-// DockerHubImage - Image from a dockerhub registry.
-type DockerHubImage struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
-}
-
-// DockerHubImageResponse - Image response for dockerhub.
-type DockerHubImageResponse struct {
-	Count   int               `json:"count"`
-	Results []*DockerHubImage `json:"results"`
-	Next    string            `json:"next"`
+	name string
 }
 
 // RegistryName - Retrieve the registry name
 func (r FileAdapter) RegistryName() string {
-	return dockerhubName
+	return r.name
 }
 
 // GetImageNames - retrieve the images
 func (r FileAdapter) GetImageNames() ([]string, error) {
-	log.Debug("FileAdapter::GetImages")
-	log.Debug("BundleSpecLabel: %s", BundleSpecLabel)
-	log.Debug("Loading image list for org: [ %s ]", r.Config.Org)
-
-	token, err := r.getDockerHubToken()
-	if err != nil {
-		log.Errorf("unable to generate docker hub token - %v", err)
-		return nil, err
-	}
-
-	channel := make(chan string)
-	ctx, cancelFunc := context.WithCancel(context.Background())
-	defer cancelFunc()
-
-	// Intial call to getNextImages this will fan out to retrieve all the values.
-	imageResp, err := r.getNextImages(ctx, r.Config.Org, token,
-		fmt.Sprintf(dockerHubRepoImages, r.Config.Org),
-		channel, cancelFunc)
-	// if there was an issue with the first call, return the error
-	if err != nil {
-		return nil, err
-	}
-	// If no results in the fist call then close the channel as nothing will get loaded.
-	if len(imageResp.Results) == 0 {
-		log.Info("canceled retrieval as no items in org")
-		close(channel)
-	}
 	var apbData []string
-	counter := 1
-	for imageData := range channel {
-		apbData = append(apbData, imageData)
-		if counter < imageResp.Count {
-			counter++
-		} else {
-			close(channel)
-		}
-	}
-	// check to see if the context had an error
-	if ctx.Err() != nil {
-		log.Errorf("encountered an error while loading images, we may not have all the apb in the catalog - %v", ctx.Err())
-		return apbData, ctx.Err()
-	}
-
+	apbData = append(apbData, "hello-world-db-apb")
 	return apbData, nil
 }
 
@@ -114,150 +85,13 @@ func (r FileAdapter) FetchSpecs(imageNames []string) ([]*apb.Spec, error) {
 	return specs, nil
 }
 
-// getDockerHubToken - will retrieve the docker hub token.
-func (r FileAdapter) getDockerHubToken() (string, error) {
-	type Payload struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	type TokenResponse struct {
-		Token string `json:"token"`
-	}
-	data := Payload{
-		Username: r.Config.User,
-		Password: r.Config.Pass,
-	}
-	payloadBytes, err := json.Marshal(data)
-	if err != nil {
-		return "", err
-	}
-	body := bytes.NewReader(payloadBytes)
-
-	req, err := http.NewRequest("POST", dockerHubLoginURL, body)
-	if err != nil {
-		return "", err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	jsonToken, err := ioutil.ReadAll(resp.Body)
-
-	tokenResp := TokenResponse{}
-	err = json.Unmarshal(jsonToken, &tokenResp)
-	if err != nil {
-		return "", err
-	}
-	return tokenResp.Token, nil
-}
-
-// getNextImages - will follow the next URL using go routines.
-func (r FileAdapter) getNextImages(ctx context.Context,
-	org, token, url string,
-	ch chan<- string,
-	cancelFunc context.CancelFunc) (*DockerHubImageResponse, error) {
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		log.Errorf("unable to get next images for url: %v - %v", url, err)
-		cancelFunc()
-		close(ch)
-		return nil, err
-	}
-
-	req.Header.Set("Authorization", fmt.Sprintf("JWT %v", token))
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Errorf("unable to get next images for url: %v - %v", url, err)
-		cancelFunc()
-		close(ch)
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	imageList, err := ioutil.ReadAll(resp.Body)
-
-	iResp := DockerHubImageResponse{}
-	err = json.Unmarshal(imageList, &iResp)
-	if err != nil {
-		log.Errorf("unable to get next images for url: %v - %v", url, err)
-		cancelFunc()
-		close(ch)
-		return &iResp, err
-	}
-	// Keep getting the images
-	if iResp.Next != "" {
-		log.Debugf("getting next page of results - %v", iResp.Next)
-		// Fan out calls to get the next images.
-		go r.getNextImages(ctx, org, token, iResp.Next, ch, cancelFunc)
-	}
-	for _, imageName := range iResp.Results {
-		log.Debugf("Trying to load %v/%v", imageName.Namespace, imageName.Name)
-		go func(image *DockerHubImage) {
-			select {
-			case <-ctx.Done():
-				log.Debugf(
-					"loading images failed due to context err - %v name - %v",
-					ctx.Err(), image.Name)
-				return
-			default:
-				ch <- fmt.Sprintf("%v/%v", image.Namespace, image.Name)
-			}
-		}(imageName)
-	}
-	return &iResp, nil
-}
-
 func (r FileAdapter) loadSpec(imageName string) (*apb.Spec, error) {
-	if r.Config.Tag == "" {
-		r.Config.Tag = "latest"
-	}
-	req, err := http.NewRequest("GET", fmt.Sprintf(dockerHubManifestURL, imageName, r.Config.Tag), nil)
-	if err != nil {
-		return nil, err
-	}
-	token, err := r.getBearerToken(imageName)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", token))
-	return imageToSpec(req, fmt.Sprintf("%s/%s:%s", r.RegistryName(), imageName, r.Config.Tag))
-}
+	var spec apb.Spec
 
-func (r FileAdapter) getBearerToken(imageName string) (string, error) {
-	var err error
-	var req *http.Request
-	if r.Config.User == "" {
-		req, err = http.NewRequest("GET",
-			fmt.Sprintf("https://auth.docker.io/token?service=registry.docker.io&scope=repository:%v:pull", imageName), nil)
-		if err != nil {
-			return "", err
-		}
-	} else {
-		req, err = http.NewRequest("GET",
-			fmt.Sprintf("https://auth.docker.io/token?grant_type=password&service=registry.docker.io&scope=repository:%v:pull", imageName),
-			nil)
-		if err != nil {
-			return "", err
-		}
-		req.SetBasicAuth(r.Config.User, r.Config.Pass)
-	}
-	response, err := http.DefaultClient.Do(req)
+	err := yaml.Unmarshal([]byte(apbyaml), &spec)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	defer response.Body.Close()
-	t := struct {
-		Token string `json:"token"`
-	}{}
-	err = json.NewDecoder(response.Body).Decode(&t)
-	if err != nil {
-		return "", err
-	}
-	return t.Token, nil
+
+	return &spec, nil
 }
