@@ -26,7 +26,7 @@ objects:
   kind: ServiceAccount
   metadata:
     name: asb
-    namespace: "${NAMESPACE}"
+    namespace: "samplebroker"
 
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRoleBinding
@@ -39,7 +39,7 @@ objects:
   subjects:
   - kind: ServiceAccount
     name: asb
-    namespace: "${NAMESPACE}"
+    namespace: "samplebroker"
 
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRole
@@ -86,7 +86,7 @@ objects:
   subjects:
   - kind: ServiceAccount
     name: asb
-    namespace: "${NAMESPACE}"
+    namespace: "samplebroker"
   roleRef:
     kind: ClusterRole
     name: asb-auth
@@ -171,7 +171,7 @@ objects:
   kind: Secret
   metadata:
     name: asb-auth-secret
-    namespace: "${NAMESPACE}"
+    namespace: "samplebroker"
   data:
     username: ${BROKER_USER}
     password: ${BROKER_PASS}
@@ -180,7 +180,7 @@ objects:
   kind: Secret
   metadata:
     name: ${REGISTRY_SECRET_NAME}
-    namespace: "${NAMESPACE}"
+    namespace: "samplebroker"
   data:
     username: ${DOCKERHUB_USER}
     password: ${DOCKERHUB_PASS}
@@ -189,7 +189,7 @@ objects:
   kind: ConfigMap
   metadata:
     name: broker-config
-    namespace: "${NAMESPACE}"
+    namespace: "samplebroker"
     labels:
       app: ansible-service-broker
   data:
@@ -223,7 +223,7 @@ objects:
         bearer_token_file: "${BEARER_TOKEN_FILE}"
         image_pull_policy: "${IMAGE_PULL_POLICY}"
         sandbox_role: "${SANDBOX_ROLE}"
-        namespace: "${NAMESPACE}"
+        namespace: "samplebroker"
         keep_namespace: ${KEEP_NAMESPACE}
         keep_namespace_on_error: ${KEEP_NAMESPACE_ON_ERROR}
       broker:
@@ -236,7 +236,7 @@ objects:
         ssl_cert_key: /etc/tls/private/tls.key
         ssl_cert: /etc/tls/private/tls.crt
         auto_escalate: ${AUTO_ESCALATE}
-        cluster_url: ${NAMESPACE}
+        cluster_url: samplebroker
         auth:
           - type: basic
             enabled: ${ENABLE_BASIC_AUTH}
@@ -245,7 +245,7 @@ objects:
   kind: ServiceAccount
   metadata:
     name: ansibleservicebroker-client
-    namespace: "${NAMESPACE}"
+    namespace: "samplebroker"
 
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRoleBinding
@@ -254,7 +254,7 @@ objects:
   subjects:
   - kind: ServiceAccount
     name: ansibleservicebroker-client
-    namespace: "${NAMESPACE}"
+    namespace: "samplebroker"
   roleRef:
     kind: ClusterRole
     name: access-asb-role
@@ -289,7 +289,7 @@ objects:
   metadata:
     name: ansible-service-broker
   spec:
-    url: https://asb.${NAMESPACE}.svc:1338${BROKER_URL_PREFIX}/
+    url: https://asb.samplebroker.svc:1338${BROKER_URL_PREFIX}/
     authInfo:
       ${{BROKER_AUTH}}
     caBundle: ${BROKER_CA_CERT}
@@ -565,11 +565,6 @@ parameters:
   displayname: Ansible Service Broker Image
   name: BROKER_IMAGE
   value: ansibleplaybookbundle/origin-ansible-service-broker:latest
-
-- description: Namespace of the project that is being deploy
-  displayname: broker client cert key
-  name: NAMESPACE
-  value: "ansible-service-broker"
 
 - description: Configuration filepath for Ansible Service Broker
   displayname: Ansible Service Broker Configuration File
