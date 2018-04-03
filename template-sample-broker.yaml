@@ -589,7 +589,7 @@ parameters:
 - description: Will enable basic authentication
   displayname: Enable basic authentication
   name: ENABLE_BASIC_AUTH
-  value: "false"
+  value: "true"
 
 ############################################################
 # NOTE: These values MUST be base64 encoded.
