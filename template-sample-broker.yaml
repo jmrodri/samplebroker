@@ -121,7 +121,7 @@ objects:
       spec:
         serviceAccount: asb
         containers:
-        - image: ${BROKER_IMAGE}
+        - image: jmrodri/samplebroker:demo
           name: asb
           imagePullPolicy: IfNotPresent
           volumeMounts:
@@ -235,7 +235,7 @@ objects:
         recovery: ${RECOVERY}
         ssl_cert_key: /etc/tls/private/tls.key
         ssl_cert: /etc/tls/private/tls.crt
-        auto_escalate: ${AUTO_ESCALATE}
+        auto_escalate: true
         cluster_url: samplebroker
         auth:
           - type: basic
@@ -644,11 +644,6 @@ parameters:
   displayname: Recovery
   name: RECOVERY
   value: "true"
-
-- description: Auto escalate the broker. Will remove user impresonation
-  displayname: Auto Escalate
-  name: AUTO_ESCALATE
-  value: "false"
 
 - description: APB ImagePullPolicy
   displayname: APB ImagePullPolicy
