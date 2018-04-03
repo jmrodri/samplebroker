@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: ansible-service-broker
+  name: samplebroker
 objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    name: asb
+    name: samplebroker
     labels:
-      app: ansible-service-broker
-      service: asb
+      app: samplebroker
+      service: samplebroker
     annotations:
-      service.alpha.openshift.io/serving-cert-secret-name: asb-tls
+      service.alpha.openshift.io/serving-cert-secret-name: samplebroker-tls
   spec:
     ports:
       - name: port-1338
@@ -19,32 +19,32 @@ objects:
         targetPort: 1338
         protocol: TCP
     selector:
-      app: ansible-service-broker
-      service: asb
+      app: samplebroker
+      service: samplebroker
 
 - apiVersion: v1
   kind: ServiceAccount
   metadata:
-    name: asb
+    name: samplebroker
     namespace: "samplebroker"
 
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRoleBinding
   metadata:
-    name: asb
+    name: samplebroker
   roleRef:
     name: admin
     kind: ClusterRole
     apiGroup: rbac.authorization.k8s.io
   subjects:
   - kind: ServiceAccount
-    name: asb
+    name: samplebroker
     namespace: "samplebroker"
 
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRole
   metadata:
-    name: asb-auth
+    name: sb-auth
   rules:
   - apiGroups: [""]
     resources: ["namespaces"]
@@ -82,14 +82,14 @@ objects:
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRoleBinding
   metadata:
-    name: asb-auth-bind
+    name: sb-auth-bind
   subjects:
   - kind: ServiceAccount
-    name: asb
+    name: samplebroker
     namespace: "samplebroker"
   roleRef:
     kind: ClusterRole
-    name: asb-auth
+    name: sb-auth
     apiGroup: rbac.authorization.k8s.io
 
 - apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -103,34 +103,34 @@ objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: asb
+    name: samplebroker
     labels:
-      app: ansible-service-broker
-      service: asb
+      app: samplebroker
+      service: samplebroker
   spec:
     replicas: 1
     selector:
-      app: ansible-service-broker
+      app: samplebroker
     strategy:
       type: Rolling
     template:
       metadata:
         labels:
-          app: ansible-service-broker
-          service: asb
+          app: samplebroker
+          service: samplebroker
       spec:
         serviceAccount: asb
         containers:
         - image: jmrodri/samplebroker:demo
-          name: asb
+          name: samplebroker
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: config-volume
               mountPath: /etc/ansible-service-broker
-            - name: asb-tls
+            - name: samplebroker-tls
               mountPath: /etc/tls/private
-            - name: asb-auth-volume
-              mountPath: /var/run/asb-auth
+            - name: sb-auth-volume
+              mountPath: /var/run/sb-auth
           ports:
             - containerPort: 1338
               protocol: TCP
@@ -160,10 +160,10 @@ objects:
               items:
               - key: broker-config
                 path: config.yaml
-          - name: asb-tls
+          - name: samplebroker-tls
             secret:
               secretName: asb-tls
-          - name: asb-auth-volume
+          - name: sb-auth-volume
             secret:
               secretName: broker-auth-secret
 
@@ -191,7 +191,7 @@ objects:
     name: broker-config
     namespace: "samplebroker"
     labels:
-      app: ansible-service-broker
+      app: samplebroker
   data:
     broker-config: |
       registry:
@@ -244,16 +244,16 @@ objects:
 - apiVersion: v1
   kind: ServiceAccount
   metadata:
-    name: ansibleservicebroker-client
+    name: samplebroker-client
     namespace: "samplebroker"
 
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRoleBinding
   metadata:
-    name: ansibleservicebroker-client
+    name: samplebroker-client
   subjects:
   - kind: ServiceAccount
-    name: ansibleservicebroker-client
+    name: samplebroker-client
     namespace: "samplebroker"
   roleRef:
     kind: ClusterRole
@@ -263,22 +263,22 @@ objects:
 - apiVersion: v1
   kind: Secret
   metadata:
-    name: ansibleservicebroker-client
+    name: samplebroker-client
     annotations:
-      kubernetes.io/service-account.name: ansibleservicebroker-client
+      kubernetes.io/service-account.name: samplebroker-client
   type: kubernetes.io/service-account-token
 
 - apiVersion: v1
   kind: Route
   metadata:
-    name: asb-1338
+    name: samplebroker-1338
     labels:
-      app: ansible-service-broker
-      service: asb
+      app: samplebroker
+      service: samplebroker
   spec:
     to:
       kind: Service
-      name: asb
+      name: samplebroker
     port:
       targetPort: port-1338
     tls:
@@ -287,12 +287,12 @@ objects:
 - apiVersion: servicecatalog.k8s.io/v1beta1
   kind: ClusterServiceBroker
   metadata:
-    name: ansible-service-broker
+    name: samplebroker
   spec:
-    url: https://asb.samplebroker.svc:1338${BROKER_URL_PREFIX}/
+    url: https://sb.samplebroker.svc:1338${BROKER_URL_PREFIX}/
     authInfo:
       basicAuthSecret:
-        namespace: ansible-service-broker
+        namespace: samplebroker
         name: broker-auth-secret
     caBundle: ${BROKER_CA_CERT}
 
