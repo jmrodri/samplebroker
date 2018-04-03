@@ -227,7 +227,7 @@ objects:
         keep_namespace: false
         keep_namespace_on_error: true
       broker:
-        dev_broker: ${DEV_BROKER}
+        dev_broker: false
         bootstrap_on_startup: true
         refresh_interval: "600s"
         launch_apb_on_bind: true
@@ -580,11 +580,6 @@ parameters:
   displayname: Registry Auth Type
   name: REGISTRY_AUTH_TYPE
   value: secret
-
-- description: Include Broker Development Endpoint
-  displayname: Include Broker Development Endpoint
-  name: DEV_BROKER
-  value: "true"
 
 - description: APB ImagePullPolicy
   displayname: APB ImagePullPolicy
