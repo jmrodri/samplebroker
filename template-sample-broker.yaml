@@ -195,11 +195,11 @@ objects:
   data:
     broker-config: |
       registry:
-        - type: "${REGISTRY_TYPE}"
-          name: "${REGISTRY_NAME}"
-          url: "${REGISTRY_URL}"
+        - type: "dockerhub"
+          name: "dh"
+          url: "https://registry.hub.docker.com"
           org: "${DOCKERHUB_ORG}"
-          tag: "${TAG}"
+          tag: "latest"
           white_list:
             - ".*-apb$"
         - type: local_openshift
@@ -566,11 +566,6 @@ parameters:
   name: DOCKERHUB_ORG
   value: ansibleplaybookbundle
 
-- description: APB Image Tag
-  displayname: APB Image Tag
-  name: TAG
-  value: latest
-
 - description: OpenShift User Password
   displayname: OpenShift User Password
   name: OPENSHIFT_PASS
@@ -586,11 +581,6 @@ parameters:
   name: OPENSHIFT_TARGET
   value: kubernetes.default
 
-- description: Registry Type
-  displayname: Registry Type
-  name: REGISTRY_TYPE
-  value: dockerhub
-
 - description: Registry Secret Name
   displayname: Registry Secret Name
   name: REGISTRY_SECRET_NAME
@@ -600,20 +590,6 @@ parameters:
   displayname: Registry Auth Type
   name: REGISTRY_AUTH_TYPE
   value: secret
-
-# Intentionally shortening the registry name to lessen impact of
-# PodPreset name has a requirement of being less than 63 chars
-# https://github.com/kubernetes-incubator/service-catalog/issues/1047
-# https://github.com/openshift/ansible-service-broker/issues/283
-- description: Registry Name
-  displayname: Registry Name
-  name: REGISTRY_NAME
-  value: dh
-
-- description: Registry URL
-  displayname: Registry URL
-  name: REGISTRY_URL
-  value: https://registry.hub.docker.com
 
 - description: Include Broker Development Endpoint
   displayname: Include Broker Development Endpoint
