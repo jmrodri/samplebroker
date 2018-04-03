@@ -198,7 +198,7 @@ objects:
         - type: "dockerhub"
           name: "dh"
           url: "https://registry.hub.docker.com"
-          org: "${DOCKERHUB_ORG}"
+          org: "jmrodri"
           tag: "latest"
           white_list:
             - ".*-apb$"
@@ -555,11 +555,6 @@ parameters:
   displayname: Ansible Service Broker Configuration File
   name: BROKER_CONFIG
   value: /etc/ansible-service-broker/config.yaml
-
-- description: Dockerhub organization
-  displayname: Dockerhub organization
-  name: DOCKERHUB_ORG
-  value: ansibleplaybookbundle
 
 - description: OpenShift User Password
   displayname: OpenShift User Password
