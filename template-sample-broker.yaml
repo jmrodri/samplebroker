@@ -231,7 +231,7 @@ objects:
         bootstrap_on_startup: true
         refresh_interval: "600s"
         launch_apb_on_bind: true
-        output_request: ${OUTPUT_REQUEST}
+        output_request: true
         recovery: true
         ssl_cert_key: /etc/tls/private/tls.key
         ssl_cert: /etc/tls/private/tls.crt
@@ -618,11 +618,6 @@ parameters:
 - description: Include Broker Development Endpoint
   displayname: Include Broker Development Endpoint
   name: DEV_BROKER
-  value: "true"
-
-- description: Output broker requests to log
-  displayname: Output broker requests to log
-  name: OUTPUT_REQUEST
   value: "true"
 
 - description: APB ImagePullPolicy
