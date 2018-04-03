@@ -220,7 +220,7 @@ objects:
       openshift:
         host: "${CLUSTER_AUTH_HOST}"
         ca_file: "${CA_FILE}"
-        bearer_token_file: "${BEARER_TOKEN_FILE}"
+        bearer_token_file: ""
         image_pull_policy: "IfNotPresent"
         sandbox_role: "edit"
         namespace: "samplebroker"
@@ -622,11 +622,6 @@ parameters:
 - description: Service Account CAFile Path
   displayname: Service Account CAFile Path
   name: CA_FILE
-  value: ""
-
-- description: Service Account Bearer Token File
-  displayname: Service Account Bearer Token File
-  name: BEARER_TOKEN_FILE
   value: ""
 
 - description: Cluster Authentication Host
