@@ -211,7 +211,7 @@ objects:
           white_list:
             - ".*"
       dao:
-        type: "${DAO_TYPE}"
+        type: "crd"
       log:
         logfile: /var/log/ansible-service-broker/asb.log
         stdout: true
@@ -629,11 +629,6 @@ parameters:
   displayname: Enable basic authentication
   name: ENABLE_BASIC_AUTH
   value: "false"
-
-- description: Will enable CRD use. Valid values crd | etcd | ""
-  displayname: Enable CRD backend storage, will not use etcd.
-  name: DAO_TYPE
-  value: "crd"
 
 ############################################################
 # NOTE: These values MUST be base64 encoded.
