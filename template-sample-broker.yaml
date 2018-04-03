@@ -284,7 +284,7 @@ objects:
     tls:
       termination: reencrypt
 
-- apiVersion: ${SVC_CAT_API_VER}
+- apiVersion: servicecatalog.k8s.io/v1beta1
   kind: ClusterServiceBroker
   metadata:
     name: ansible-service-broker
@@ -531,11 +531,6 @@ objects:
                 items:
                   type: string
 parameters:
-- description: Service Catalog API Version.  Newer service-catalogs use servicecatalog.k8s.io/v1beta1
-  displayname: Service Catalog API Version.  Newer service-catalogs use servicecatalog.k8s.io/v1beta1
-  name: SVC_CAT_API_VER
-  value: servicecatalog.k8s.io/v1beta1
-
 - description: Service Broker CA Cert.
   displayname: Service Broker kind.
   name: BROKER_CA_CERT
