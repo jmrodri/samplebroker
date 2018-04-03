@@ -551,11 +551,6 @@ parameters:
   name: ROUTING_SUFFIX
   value: "172.17.0.1.nip.io"
 
-- description: Container Image to use for Ansible Service Broker in format of imagename:tag
-  displayname: Ansible Service Broker Image
-  name: BROKER_IMAGE
-  value: ansibleplaybookbundle/origin-ansible-service-broker:latest
-
 - description: Configuration filepath for Ansible Service Broker
   displayname: Ansible Service Broker Configuration File
   name: BROKER_CONFIG
