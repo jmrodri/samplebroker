@@ -33,6 +33,11 @@
   branch = "vendoring"
   name = "github.com/openshift/ansible-service-broker"
 
+[[override]]
+  branch = "vendor-0.1"
+  source = "git@github.com:jmrodri/bundle-lib.git"
+  name = "github.com/automationbroker/bundle-lib"
+
 [prune]
   go-tests = true
   unused-packages = true
