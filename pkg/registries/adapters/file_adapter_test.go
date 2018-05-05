@@ -38,12 +38,12 @@ plans:
         default: admin`
 
 func TestRegistryName(t *testing.T) {
-	fa := FileAdapter{name: "testadapter"}
+	fa := FileAdapter{Name: "testadapter"}
 	assert.Equal(t, "testadapter", fa.RegistryName())
 }
 
 func TestGetImageNames(t *testing.T) {
-	fa := FileAdapter{name: "testadapter"}
+	fa := FileAdapter{Name: "testadapter"}
 	data, err := fa.GetImageNames()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -52,7 +52,7 @@ func TestGetImageNames(t *testing.T) {
 }
 
 func TestFetchSpecs(t *testing.T) {
-	fa := FileAdapter{name: "testadapter"}
+	fa := FileAdapter{Name: "testadapter"}
 	imagenames := []string{"hello-world-db-apb"}
 	specs, err := fa.FetchSpecs(imagenames)
 	if err != nil {

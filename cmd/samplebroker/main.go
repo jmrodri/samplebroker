@@ -22,6 +22,7 @@ import (
 	"github.com/automationbroker/bundle-lib/registries"
 	"github.com/cloudflare/cfssl/log"
 	flags "github.com/jessevdk/go-flags"
+	"github.com/jmrodri/samplebroker/pkg/registries/adapters"
 	"github.com/openshift/ansible-service-broker/pkg/app"
 )
 
@@ -60,7 +61,8 @@ func main() {
 		Runner:     "",
 	}
 
-	reg, err := registries.NewRegistry(c, "openshift")
+	fadapter := adapters.FileAdapter{Name: "foobar"}
+	reg, err := registries.NewCustomRegistry(c, fadapter, "openshift")
 	if err != nil {
 		log.Errorf(
 			"Failed to initialize foo Registry err - %v \n", err)

@@ -55,12 +55,12 @@ plans:
 
 // FileAdapter - Docker Hub Adapter
 type FileAdapter struct {
-	name string
+	Name string
 }
 
 // RegistryName - Retrieve the registry name
 func (r FileAdapter) RegistryName() string {
-	return r.name
+	return r.Name
 }
 
 // GetImageNames - retrieve the images
