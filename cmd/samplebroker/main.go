@@ -20,10 +20,10 @@ import (
 	"os"
 
 	"github.com/automationbroker/bundle-lib/registries"
-	"github.com/cloudflare/cfssl/log"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/jmrodri/samplebroker/pkg/registries/adapters"
 	"github.com/openshift/ansible-service-broker/pkg/app"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -62,6 +62,7 @@ func main() {
 	}
 
 	fadapter := adapters.FileAdapter{Name: "foobar"}
+	log.Info("Creating a new custom registry")
 	reg, err := registries.NewCustomRegistry(c, fadapter, "openshift")
 	if err != nil {
 		log.Errorf(
