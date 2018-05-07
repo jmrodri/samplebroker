@@ -380,7 +380,7 @@
     "pkg/util/logging",
     "pkg/version"
   ]
-  revision = "ee4ba3d84a0481fb2d4c1aa90cd933bd50bb8915"
+  revision = "abdb0cb3c485f21e2a7dae087c250755a72f5ee2"
 
 [[projects]]
   name = "github.com/openshift/api"
@@ -502,11 +502,10 @@
     "http2/hpack",
     "idna",
     "internal/timeseries",
-    "lex/httplex",
     "trace",
     "websocket"
   ]
-  revision = "640f4622ab692b87c2f3a94265e6f579fe38263d"
+  revision = "d11bb6cd8e3c4e60239c9cb20ef68586d74500d0"
 
 [[projects]]
   branch = "master"
@@ -515,7 +514,7 @@
     "unix",
     "windows"
   ]
-  revision = "6f686a352de66814cdd080d970febae7767857a3"
+  revision = "7db1c3b1a98089d0071c84f646ff5c96aad43682"
 
 [[projects]]
   name = "golang.org/x/text"
