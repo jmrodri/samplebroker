@@ -54,7 +54,7 @@ func main() {
 		Images:     []string{"hello-world-db-apb"},
 		Namespaces: []string{"openshift"},
 		Fail:       false,
-		WhiteList:  []string{},
+		WhiteList:  []string{".*-apb$"},
 		BlackList:  []string{},
 		AuthType:   "",
 		AuthName:   "",
