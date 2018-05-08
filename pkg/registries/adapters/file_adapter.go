@@ -73,7 +73,7 @@ func (r FileAdapter) GetImageNames() ([]string, error) {
 // FetchSpecs - retrieve the spec for the image names.
 func (r FileAdapter) FetchSpecs(imageNames []string) ([]*apb.Spec, error) {
 	specs := []*apb.Spec{}
-	log.Debugf("Entered FetchSpecs, %v", imageNames)
+	log.Warningf("Entered FetchSpecs, %v", imageNames)
 	for _, imageName := range imageNames {
 		spec, err := r.loadSpec(imageName)
 		if err != nil {
@@ -83,19 +83,22 @@ func (r FileAdapter) FetchSpecs(imageNames []string) ([]*apb.Spec, error) {
 			specs = append(specs, spec)
 		}
 	}
-	log.Debugf("Leaving FetchSpecs, %v", specs)
+	log.Warningf("Leaving FetchSpecs, %v", specs)
 	return specs, nil
 }
 
 func (r FileAdapter) loadSpec(imageName string) (*apb.Spec, error) {
 	var spec apb.Spec
 
-	log.Debugf("entered FileAdapter.loadSpec(%s)", imageName)
+	log.Warningf("entered FileAdapter.loadSpec(%s)", imageName)
 	err := yaml.Unmarshal([]byte(apbyaml), &spec)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Debugf("leaving FileAdapter.loadSpec(%s), returning %v", imageName, spec)
+	// hard code to 2
+	spec.Runtime = 2
+
+	log.Warningf("leaving FileAdapter.loadSpec(%s), returning %v", imageName, spec)
 	return &spec, nil
 }
