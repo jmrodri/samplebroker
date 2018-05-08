@@ -17,9 +17,11 @@
 package main
 
 import (
+	"net/url"
 	"os"
 
 	"github.com/automationbroker/bundle-lib/registries"
+	bladapters "github.com/automationbroker/bundle-lib/registries/adapters"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/jmrodri/samplebroker/pkg/registries/adapters"
 	"github.com/openshift/ansible-service-broker/pkg/app"
@@ -43,6 +45,7 @@ func main() {
 	// To add your custom registries, define an entry in this array.
 	regs := []registries.Registry{}
 
+	// File adapter
 	c := registries.Config{
 		URL:        "",
 		User:       "",
@@ -67,6 +70,50 @@ func main() {
 	if err != nil {
 		log.Errorf(
 			"Failed to initialize foo Registry err - %v \n", err)
+		os.Exit(1)
+	}
+
+	regs = append(regs, reg)
+
+	// Dockerhub adapter
+	c = registries.Config{
+		URL:        "https://registry.hub.docker.com",
+		User:       "",
+		Pass:       "",
+		Org:        "jmrodri",
+		Tag:        "latest",
+		Type:       "dockerhub",
+		Name:       "cdh",
+		Images:     []string{},
+		Namespaces: []string{},
+		Fail:       false,
+		WhiteList:  []string{".*-apb$"},
+		BlackList:  []string{},
+		AuthType:   "",
+		AuthName:   "",
+		Runner:     "",
+	}
+
+	theurl, _ := url.Parse(c.URL)
+
+	// would be better to use a conversion function
+	adapterconfig := bladapters.Configuration{
+		URL:        theurl,
+		User:       c.User,
+		Pass:       c.Pass,
+		Org:        c.Org,
+		Runner:     c.Runner,
+		Images:     c.Images,
+		Namespaces: c.Namespaces,
+		Tag:        c.Tag,
+	}
+
+	dhadapter := bladapters.DockerHubAdapter{Config: adapterconfig}
+	log.Info("Creating a custom dockerhub registry")
+	reg, err = registries.NewCustomRegistry(c, dhadapter, "openshift")
+	if err != nil {
+		log.Errorf(
+			"Failed to initialize dh Registry err - %v \n", err)
 		os.Exit(1)
 	}
 
