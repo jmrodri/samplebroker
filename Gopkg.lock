@@ -44,7 +44,6 @@
   version = "0.1.2"
 
 [[projects]]
-  branch = "vendor-0.1"
   name = "github.com/automationbroker/bundle-lib"
   packages = [
     "apb",
@@ -57,8 +56,8 @@
     "registries/adapters",
     "runtime"
   ]
-  revision = "221b902c0e636d6f4f036965a7721b6ec3f3fba6"
-  source = "git@github.com:jmrodri/bundle-lib.git"
+  revision = "ee4a23415a7d6356ea4072e9894c53601c66abf2"
+  version = "0.1.5"
 
 [[projects]]
   branch = "master"
@@ -366,7 +365,7 @@
   version = "v1"
 
 [[projects]]
-  branch = "vendoring"
+  branch = "master"
   name = "github.com/openshift/ansible-service-broker"
   packages = [
     "pkg/app",
@@ -380,7 +379,7 @@
     "pkg/util/logging",
     "pkg/version"
   ]
-  revision = "001459a139d665f96573b44ca16b913b41447437"
+  revision = "181d2e37a8f84d09348506b90c7f79a388277880"
 
 [[projects]]
   name = "github.com/openshift/api"
@@ -505,7 +504,7 @@
     "trace",
     "websocket"
   ]
-  revision = "d11bb6cd8e3c4e60239c9cb20ef68586d74500d0"
+  revision = "f73e4c9ed3b7ebdd5f699a16a880c2b1994e50dd"
 
 [[projects]]
   branch = "master"
@@ -551,6 +550,7 @@
     "balancer",
     "balancer/base",
     "balancer/roundrobin",
+    "channelz",
     "codes",
     "connectivity",
     "credentials",
@@ -572,8 +572,8 @@
     "tap",
     "transport"
   ]
-  revision = "d11072e7ca9811b1100b80ca0269ac831f06d024"
-  version = "v1.11.3"
+  revision = "41344da2231b913fa3d983840a57a6b1b7b631a1"
+  version = "v1.12.0"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -922,7 +922,7 @@
     "pkg/util",
     "pkg/util/proto"
   ]
-  revision = "f08db293d3ef80052d6513ece19792642a289fea"
+  revision = "61db125d227fc9d4e373819a059516f32f7f23c7"
 
 [[projects]]
   name = "k8s.io/kubernetes"
@@ -936,6 +936,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5bf56ae940c5af28aefdc169801f6f7bb6e2858eaf52ad3d560a2918e6aea5f6"
+  inputs-digest = "b6e0b5e94be97f963eeaf50bdd01dd0d268aa6fee9ba1344b6d5599557d3145c"
   solver-name = "gps-cdcl"
   solver-version = 1
