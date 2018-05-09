@@ -379,7 +379,7 @@
     "pkg/util/logging",
     "pkg/version"
   ]
-  revision = "181d2e37a8f84d09348506b90c7f79a388277880"
+  revision = "a6477912c076c6d32643b252a82180125daf76ad"
 
 [[projects]]
   name = "github.com/openshift/api"
